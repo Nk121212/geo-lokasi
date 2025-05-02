@@ -1,4 +1,45 @@
 <script>
+
+    if (navigator.connection) {
+
+        console.log(navigator.connection);
+        alert(navigator.connection);
+
+        const connectionType = navigator.connection.type;
+        const effectiveConnectionType = navigator.connection.effectiveType;
+        const downlinkMax = navigator.connection.downlinkMax;
+        const rtt = navigator.connection.rtt;
+        const downlink = navigator.connection.downlink;
+        const saveData = navigator.connection.saveData;
+
+        console.log("Tipe Koneksi (perkiraan):", connectionType);
+        console.log("Tipe Koneksi Efektif (perkiraan):", effectiveConnectionType);
+        console.log("Maksimum Kecepatan Unduh (Mbps):", downlinkMax);
+        console.log("Round Trip Time (ms):", rtt);
+        console.log("Kecepatan Unduh Saat Ini (Mbps):", downlink);
+        console.log("Mode Hemat Data Aktif:", saveData);
+
+        // Anda bisa mencoba melakukan deteksi berdasarkan nilai connectionType:
+        if (connectionType === 'wifi') {
+            console.log("Kemungkinan menggunakan koneksi Wi-Fi.");
+        } else if (connectionType === 'cellular') {
+            console.log("Kemungkinan menggunakan koneksi seluler.");
+        } else if (connectionType === 'ethernet') {
+            console.log("Kemungkinan menggunakan koneksi Ethernet (kabel).");
+        } else if (connectionType === 'bluetooth') {
+            console.log("Kemungkinan menggunakan koneksi Bluetooth.");
+        } else if (connectionType === 'none') {
+            console.log("Tidak ada koneksi internet.");
+        } else if (connectionType === 'other' || connectionType === 'unknown') {
+            console.log("Jenis koneksi lain atau tidak diketahui.");
+        }
+
+    // effectiveConnectionType memberikan perkiraan kualitas koneksi (misalnya 'slow-2g', '2g', '3g', '4g').
+
+    } else {
+        console.log("Network Information API tidak didukung oleh browser ini.");
+    }
+
     function tampilkanPosisi(posisi) {
         const coords = posisi.coords;
 
