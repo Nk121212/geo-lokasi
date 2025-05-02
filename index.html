@@ -3,7 +3,7 @@
     if (navigator.connection) {
 
         if(navigator.connection.type){
-            isCellular(navigator.connection.type);
+            isCellular(navigator);
             dapatkanLokasi();
         }else{
             alert('silakan gunakan hp anda !');
@@ -13,11 +13,12 @@
         console.log("Network Information API tidak didukung oleh browser ini.");
     }
 
-    function isCellular(type){
+    function isCellular(navigator){
         if(navigator.connection.type.toLowerCase() != 'cellular'){
             alert('silakan gunakan hp anda !');
             return false;
         }
+        return true;
     }
 
     function tampilkanPosisi(posisi) {
