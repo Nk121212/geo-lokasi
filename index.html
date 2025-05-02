@@ -1,64 +1,84 @@
 <script>
-    // if ("geolocation" in navigator) {
-    //     navigator.geolocation.getCurrentPosition(function(position) {
-    //         const latitude = position.coords.latitude;
-    //         const longitude = position.coords.longitude;
-    //         console.log("Latitude: " + latitude + ", Longitude: " + longitude);
-    //         // Lakukan sesuatu dengan data lokasi ini (misalnya, tampilkan di peta, kirim ke server)
-    //     }, function(error) {
-    //         switch(error.code) {
-    //         case error.PERMISSION_DENIED:
-    //             console.error("Pengguna menolak permintaan lokasi.");
-    //             break;
-    //         case error.POSITION_UNAVAILABLE:
-    //             console.error("Informasi lokasi tidak tersedia.");
-    //             break;
-    //         case error.TIMEOUT:
-    //             console.error("Permintaan waktu lokasi habis.");
-    //             break;
-    //         case error.UNKNOWN_ERROR:
-    //             console.error("Terjadi kesalahan yang tidak diketahui.");
-    //             break;
-    //         }
-    //     });
-    // } else {
-    //     console.error("Geolocation tidak didukung oleh browser ini.");
-    // }
+    function tampilkanPosisi(posisi) {
+        const coords = posisi.coords;
 
-    function getNamaLokasi(latitude, longitude) {
-        const apiKey = 'AIzaSyDOnRnCM70E5HWQ5wgDJ8SOz955ILS8jrc'; // GANTI DENGAN KUNCI API ANDA YANG SEBENARNYA
-        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`;
+        console.log("Latitude: " + coords.latitude);
+        console.log("Longitude: " + coords.longitude);
+        console.log("Akurasi Horizontal: " + coords.accuracy + " meter");
 
-        return fetch(apiUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+        dapatkanNamaLokasi(coords.latitude, coords.longitude);
+
+        if (coords.altitude !== null) {
+            console.log("Ketinggian: " + coords.altitude + " meter");
+        } else {
+            console.log("Informasi ketinggian tidak tersedia.");
+        }
+
+        if (coords.altitudeAccuracy !== null) {
+            console.log("Akurasi Ketinggian: " + coords.altitudeAccuracy + " meter");
+        } else {
+            console.log("Akurasi ketinggian tidak tersedia.");
+        }
+
+        if (coords.heading !== null) {
+            console.log("Arah Perjalanan: " + coords.heading + " derajat");
+        } else {
+            console.log("Informasi arah perjalanan tidak tersedia.");
+        }
+
+        if (coords.speed !== null) {
+            console.log("Kecepatan: " + coords.speed + " meter per detik");
+        } else {
+            console.log("Informasi kecepatan tidak tersedia.");
+        }
+
+        // Lakukan tindakan lain dengan data lokasi ini
+    }
+
+    function dapatkanLokasi() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(tampilkanPosisi, tampilkanError);
+        } else {
+            alert("Geolocation tidak didukung oleh browser ini.");
+        }
+    }
+
+    function tampilkanError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+            alert("Pengguna menolak permintaan untuk geolokasi.");
+            break;
+            case error.POSITION_UNAVAILABLE:
+            alert("Informasi lokasi tidak tersedia.");
+            break;
+            case error.TIMEOUT:
+            alert("Permintaan untuk mendapatkan lokasi pengguna telah habis waktu.");
+            break;
+            case error.UNKNOWN_ERROR:
+            alert("Terjadi kesalahan yang tidak diketahui.");
+            break;
+        }
+    }
+
+    function dapatkanNamaLokasi(latitude, longitude) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+
+        fetch(url)
+            .then(response => response.json())
             .then(data => {
-                alert(data);
-                // Proses data respons dari Google Geocoding API
-                if (data && data.results && data.results.length > 0 && data.results[0].formatted_address) {
-                    return data.results[0].formatted_address;
-                } else {
-                    return "Nama lokasi tidak ditemukan";
-                }
+            if (data && data.display_name) {
+                console.log("Nama Lokasi:", data.display_name);
+                return data.display_name;
+            } else {
+                console.log("Nama lokasi tidak ditemukan.");
+                return null;
+            }
             })
             .catch(error => {
-                console.error("Terjadi kesalahan saat mendapatkan nama lokasi:", error);
-                return "Gagal mendapatkan nama lokasi";
+            console.error("Terjadi kesalahan saat mendapatkan nama lokasi:", error);
+            return null;
             });
     }
 
-    const latitude = -6.835178799694139;
-    const longitude = 107.9962076700985;
-    
-
-    getNamaLokasi(latitude, longitude)
-        .then(namaLokasi => {
-            console.log(`Nama lokasi untuk ${latitude}, ${longitude}: ${namaLokasi}`);
-            // Lakukan sesuatu dengan nama lokasi ini
-        });
-
+    dapatkanLokasi();
 </script>
