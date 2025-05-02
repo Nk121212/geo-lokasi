@@ -2,8 +2,7 @@
 
     if (navigator.connection) {
 
-        console.log(navigator.connection);
-        alert(navigator.connection);
+        alert(navigator.connection.type);
 
         const connectionType = navigator.connection.type;
         const effectiveConnectionType = navigator.connection.effectiveType;
